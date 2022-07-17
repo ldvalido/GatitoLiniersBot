@@ -1,0 +1,8 @@
+version:  "3.8"
+services:
+  bot:
+    image: ldvalido/gatito_liniers_bot:latest
+    restart: always
+    env_file:
+      - dockerEnvironment.env
+  ##This file must be created in order to run the application
