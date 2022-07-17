@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ##Secrets
-dockerEnvironment.dev
+/dockerEnvironment.env
