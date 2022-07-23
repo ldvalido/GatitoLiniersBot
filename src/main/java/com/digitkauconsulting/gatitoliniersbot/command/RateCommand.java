@@ -1,6 +1,8 @@
 package com.digitkauconsulting.gatitoliniersbot.command;
 
 import com.digitkauconsulting.gatitoliniersbot.service.StockService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -9,11 +11,12 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Service
-public class rateCommand implements IBotCommand {
+public class RateCommand implements IBotCommand {
 
+    static Logger log = LoggerFactory.getLogger(RateCommand.class);
     public final StockService stockService;
 
-    public rateCommand(StockService stockService) {
+    public RateCommand(StockService stockService) {
         this.stockService = stockService;
     }
 
@@ -29,6 +32,10 @@ public class rateCommand implements IBotCommand {
 
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] arguments) {
+
+        log.info(message.getText());
+        log.info(String.join(",",arguments));
+
         SendMessage msg = new SendMessage();
         msg.setChatId(message.getChatId().toString());
         String ticket = arguments[0];

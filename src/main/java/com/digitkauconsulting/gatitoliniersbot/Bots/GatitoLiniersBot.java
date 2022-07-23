@@ -44,7 +44,7 @@ public class GatitoLiniersBot extends TelegramLongPollingCommandBot {
                 try {
                     execute(echoMessage);
                 } catch (TelegramApiException e) {
-                    //BotLogger.error(LOGTAG, e);
+                    LOG.error(LOGTAG, e);
                 }
             }
         }

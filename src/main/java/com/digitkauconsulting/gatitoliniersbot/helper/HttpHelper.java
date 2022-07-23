@@ -4,17 +4,21 @@ import com.google.gson.Gson;
 import okhttp3.*;
 
 import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.HashMap;
 
 public class HttpHelper {
 
+    final HashMap<HttpHelperContentType, String> contentTypes = new HashMap<>();
     final String JSONContentType = "application/json";
+    final String TEXTPLAINContentType="text/plain";
     OkHttpClient client = new OkHttpClient();
     Gson gson = new Gson();
-    final static Logger LOG = LoggerFactory.getLogger(HttpHelper.class);
+    final static ValvedLogger LOG = new ValvedLogger(HttpHelper.class ,1);
 
+    public HttpHelper(){
+        contentTypes.put(HttpHelperContentType.TextPlain, TEXTPLAINContentType);
+        contentTypes.put(HttpHelperContentType.Json, JSONContentType);
+    }
     public String get (String url){
         String returnValue = null;
         Request request = new Request.Builder()
@@ -37,9 +41,16 @@ public class HttpHelper {
         return returnValue;
     }
 
-    public <T> T post(String url, Class<T> classOfT, Object data) {
+    public <T> T post(String url, Class<T> classOfT, Object data, HttpHelperContentType contentType) {
         T returnValue =null;
-        RequestBody body = RequestBody.create(gson.toJson(data), MediaType.parse(JSONContentType));
+
+        String bodyRaw = data.toString();
+
+        //TODO: Refactor it
+        if (contentType == HttpHelperContentType.Json){
+            bodyRaw = gson.toJson(data);
+        }
+        RequestBody body = RequestBody.create(bodyRaw, MediaType.parse(contentTypes.get(contentType)));
 
         Request req = new Request.Builder()
                 .url(url)
@@ -59,6 +70,10 @@ public class HttpHelper {
         }
 
         return returnValue;
+    }
+
+    public <T> T post(String url, Class<T> classOfT, Object data) {
+       return post(url, classOfT, data, HttpHelperContentType.Json);
     }
 }
 
