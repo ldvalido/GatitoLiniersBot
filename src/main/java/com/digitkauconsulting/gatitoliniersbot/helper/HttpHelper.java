@@ -2,22 +2,25 @@ package com.digitkauconsulting.gatitoliniersbot.helper;
 
 import com.google.gson.Gson;
 import okhttp3.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
-
+@Service
 public class HttpHelper {
 
     final HashMap<HttpHelperContentType, String> contentTypes = new HashMap<>();
-    final String JSONContentType = "application/json";
-    final String TEXTPLAINContentType="text/plain";
     OkHttpClient client = new OkHttpClient();
     Gson gson = new Gson();
     final static ValvedLogger LOG = new ValvedLogger(HttpHelper.class ,1);
 
-    public HttpHelper(){
-        contentTypes.put(HttpHelperContentType.TextPlain, TEXTPLAINContentType);
-        contentTypes.put(HttpHelperContentType.Json, JSONContentType);
+    ApplicationContext context;
+    public HttpHelper(ApplicationContext context){
+        this.context = context;
+        contentTypes.put(HttpHelperContentType.TextPlain, "HttpHandlerText");
+        contentTypes.put(HttpHelperContentType.Json, "HttpHandlerJson");
+
     }
     public String get (String url){
         String returnValue = null;
@@ -44,13 +47,9 @@ public class HttpHelper {
     public <T> T post(String url, Class<T> classOfT, Object data, HttpHelperContentType contentType) {
         T returnValue =null;
 
-        String bodyRaw = data.toString();
+        HttpHelperEncodingHandler handler = (HttpHelperEncodingHandler) context.getBean(contentTypes.get(contentType));
 
-        //TODO: Refactor it
-        if (contentType == HttpHelperContentType.Json){
-            bodyRaw = gson.toJson(data);
-        }
-        RequestBody body = RequestBody.create(bodyRaw, MediaType.parse(contentTypes.get(contentType)));
+        RequestBody body = handler.preAction(data);
 
         Request req = new Request.Builder()
                 .url(url)
@@ -63,7 +62,7 @@ public class HttpHelper {
 
             LOG.info(result);
 
-            returnValue = gson.fromJson(result, classOfT);
+            returnValue = handler.postAction(result, classOfT);
         }
         catch (IOException e){
             LOG.error(e.getMessage());
@@ -76,4 +75,3 @@ public class HttpHelper {
        return post(url, classOfT, data, HttpHelperContentType.Json);
     }
 }
-

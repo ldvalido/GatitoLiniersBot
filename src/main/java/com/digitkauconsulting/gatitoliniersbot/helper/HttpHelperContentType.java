@@ -1,5 +1,5 @@
 package com.digitkauconsulting.gatitoliniersbot.helper;
 
-public enum HttpHelperContentType {
+public enum HttpHelperContentType  {
     TextPlain, Json
 }

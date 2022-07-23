@@ -3,6 +3,7 @@ package com.digitkauconsulting.gatitoliniersbot.service;
 import com.digitkauconsulting.gatitoliniersbot.helper.HttpHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +17,17 @@ public class StockServiceImpl implements StockService {
     @Value("${stockRequestIndex}")
     Integer stockRequestIndex;
 
+    final
+    HttpHelper httpHelper;
+
+    public StockServiceImpl(HttpHelper httpHelper) {
+        this.httpHelper = httpHelper;
+    }
+
     @Override
     public String getStockRate(String stockName) {
         String url = String.format(stockUrl, stockName);
 
-        HttpHelper httpHelper = new HttpHelper();
         String rawResult = httpHelper.get(url);
         String[] results = rawResult.split(",");
         String result = results[stockRequestIndex];
