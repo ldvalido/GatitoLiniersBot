@@ -2,21 +2,18 @@ package com.digitkauconsulting.gatitoliniersbot.service.eventManagement;
 
 import com.digitkauconsulting.gatitoliniersbot.model.Event;
 import com.digitkauconsulting.gatitoliniersbot.service.TelegramService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 @Service
 public class EventHandlerImpl implements EventHandler {
 
-    static Logger log = LoggerFactory.getLogger(EventHandlerImpl.class);
+    //static Logger log = LoggerFactory.getLogger(EventHandlerImpl.class);
 
-     List<Event> events = new ArrayList();
+    ArrayList<Event> events = new ArrayList<>();
     TelegramService tgSrv;
 
     public EventHandlerImpl(TelegramService tgSrv){
@@ -41,6 +38,6 @@ public class EventHandlerImpl implements EventHandler {
             }
         };
         Timer timer = new Timer("");
-        timer.scheduleAtFixedRate(t, 0, 1 * 1000L);
+        timer.scheduleAtFixedRate(t, 0, 1000L);
     }
 }
